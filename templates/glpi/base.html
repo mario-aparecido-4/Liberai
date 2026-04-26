@@ -1,0 +1,186 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Liberaí{% endblock %}</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+
+    <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
+    
+    <style>
+        :root {
+            /* Paleta de Cores definida por você */
+            --bg-dark: #000020;       /* Fundo Principal */
+            --neon-pink: #ff66c4;     /* Rosa Neon */
+            --text-light: #ffffff;    /* Texto Branco */
+        }
+        
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- ESTILO DO MENU FLUTUANTE --- */
+        .navbar-custom {
+            background-color: var(--bg-dark); /* Mesmo tom do fundo */
+            border: 2px solid var(--neon-pink); /* Borda Rosa */
+            border-radius: 20px; /* Bordas arredondadas */
+            
+            /* O segredo para não tocar os cantos: Margem! */
+            margin: 20px 20px 0 20px; 
+            padding: 0px 20px;
+            
+            /* Um brilho leve (opcional, mas fica show) */
+            box-shadow: 0 0 15px rgba(255, 102, 196, 0.15); 
+        }
+
+        .navbar-brand {
+            font-family: 'Bebas Neue', sans-serif; /* AQUI ESTÁ A FONTE */
+            font-size: 2.5rem; /* Aumentei um pouco pq a Bebas é estreita */
+            color: var(--neon-pink) !important;
+            letter-spacing: 1px;
+            display: flex;       /* Para alinhar imagem e texto */
+            align-items: center;
+            line-height: 1;
+            gap: 5px;          /* Espaço entre logo e texto */
+            padding-left: 20px;
+            padding-right: 0;
+            padding-top: 3px;
+            padding-bottom: 0;
+            margin-top: 5px;  /* Empurra o conjunto todo para baixo */
+            margin-bottom: 0;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8) !important;
+            transition: color 0.3s;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: var(--neon-pink) !important;
+        }
+
+        /* --- BOTÕES --- */
+        .btn-neon {
+            background-color: transparent;
+            border: 1px solid var(--neon-pink);
+            color: var(--neon-pink);
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-neon:hover {
+            background-color: var(--neon-pink);
+            color: var(--bg-dark);
+            box-shadow: 0 0 15px var(--neon-pink);
+        }
+
+        /* --- CARDS (Adaptação para Dark Mode) --- */
+        /* Isso garante que os cards do index não fiquem brancos estourados */
+        .card {
+            background-color: #0b0b2e; /* Um pouquinho mais claro que o fundo pra dar contraste */
+            border: 1px solid rgba(255, 102, 196, 0.2);
+            color: white;
+        }
+        
+        .text-muted {
+            color: #b0b0b0 !important; /* Ajuste para ler cinza no escuro */
+        }
+
+        /* --- RODAPÉ --- */
+        footer {
+            margin-top: auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Ajuste do Dropdown do usuário no escuro */
+        .dropdown-menu {
+            background-color: #0b0b2e;
+            border: 1px solid var(--neon-pink);
+        }
+        .dropdown-item { color: white; }
+        .dropdown-item:hover { background-color: var(--neon-pink); color: #000; }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid"> <a class="navbar-brand" href="{% url 'index' %}">
+                <img src="{% static 'img/logo.png' %}" alt="Logo" style="height: 2rem; width: auto; transform: translateY(-4px);">
+                LIBERAÍ
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" style="border-color: var(--neon-pink);">
+                <i class="bi bi-list" style="color: var(--neon-pink);"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+
+                <div class="d-flex align-items-center ms-auto">
+                    {% if user.is_authenticated %}
+                        <div class="dropdown">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
+                                <span>Olá, {{ user.nome|default:user.email }}</span>
+                                <div class="rounded-circle d-flex align-items-center justify-content-center" 
+                                     style="width: 35px; height: 35px; background-color: var(--neon-pink); color: var(--bg-dark); font-weight:bold;">
+                                    {{ user.email|first|upper }}
+                                </div>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow">
+                                <li>
+                                    <form action="{% url 'logout' %}" method="post" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item">
+                                            <i class="bi bi-box-arrow-right"></i> Sair
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-neon btn-sm px-4 rounded-pill">Entrar</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert" 
+                     style="background: transparent; border: 1px solid var(--neon-pink); color: white;">
+                    {{ message }}
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <main class="container py-4">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="py-4 text-center">
+        <div class="container">
+            <small>&copy; 2025 Liberaí - IFAL Palmeira dos Índios</small>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

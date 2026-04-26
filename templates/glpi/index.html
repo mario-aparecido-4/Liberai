@@ -1,0 +1,174 @@
+{% extends 'glpi/base.html' %}
+{% load static %}
+
+{% block title %}Home - Liberaí{% endblock %}
+
+{% block content %}
+
+<style>
+    /* Container para centralizar tudo */
+    .container-central {
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Centraliza horizontalmente */
+        padding: 20px;
+        gap: 15px; /* Espaço entre os cards */
+    }
+
+    .card-linha {
+        margin-bottom: 3px;
+        font-size: 0.95rem;
+    }
+
+    /* Mantém o estilo base do card */
+    .card-custom {
+        background-color: #c4c4c4;
+        border: 2px solid black;
+        border-radius: 15px;
+        padding: 15px;
+        width: 100%;
+        max-width: 60%; /* Aumentei um pouco para caber os botões */
+        box-shadow: 3px 3px 5px rgba(0,0,0,0.3);
+        color: #000;
+        display: flex;
+        flex-direction: column;
+        gap: 8px; /* Espaçamento entre as linhas internas */
+    }
+
+    /* Classe mágica para colocar coisas lado a lado (Esquerda --- Direita) */
+    .card-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .card-titulo {
+        font-size: 1.3rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+    }
+
+    /* Estilo simples para os botões de ação */
+    .btn-icon {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.2rem;
+        margin-left: 5px;
+        text-decoration: none; /* Para o link de apagar */
+    }
+
+    /* Container dos botões flutuantes */
+    .fab-container {
+        position: fixed;
+        bottom: 120px; /* Mais distante de baixo (antes era 20) */
+        right: 60px;  /* Mais distante da direita (antes era 20) */
+        display: flex;
+        flex-direction: column;
+        gap: 15px;    /* Espaço entre um botão e outro */
+        z-index: 1000; /* Garante que fique por cima de tudo */
+    }
+
+    /* Estilo padrão para os botões redondos/quadrados */
+    .fab-btn {
+        width: 70px;        /* Largura maior */
+        height: 70px;       /* Altura maior */
+        border: 2px solid #ffffff; /* A fina borda preta */
+        border-radius: 15px;     /* Borda arredondada */
+        cursor: pointer;
+        display: flex;           /* Para centralizar o ícone */
+        justify-content: center; /* Centraliza horizontalmente */
+        align-items: center;     /* Centraliza verticalmente */
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.3); /* Sombra suave */
+        transition: transform 0.2s; /* Efeito ao passar o mouse */
+        color: white; /* Cor do ícone */
+    }
+
+    /* Efeito de clique */
+    .fab-btn:active {
+        transform: scale(0.95);
+    }
+
+    /* Ícones maiores */
+    .fab-btn i {
+        font-size: 2rem; /* Aumenta o tamanho do desenho do ícone */
+    }
+
+    /* Cores específicas */
+    .btn-calendar {
+        background-color: #F4AE31;
+    }
+
+    .btn-add {
+        background-color: #ff4081;
+    }
+</style>
+
+{% if not solicitacoes %}
+    <div style="text-align: center; margin-top: 50px; color: white;">
+        <h2>Você não possui solicitações pendentes.</h2>
+        <p>Clique no (+) para criar uma nova.</p>
+    </div>
+
+{% else %}
+    
+    <div class="container-central">
+        {% for sol in solicitacoes %}
+            <div class="card-custom">
+                
+                <div class="card-titulo">
+                    {{ sol.motivo }}
+                </div>
+
+                <div class="card-row" style="font-size: 0.95rem;">
+                    <div>
+                        <strong>{{ sol.espaco.nome }}</strong>
+                    </div>
+                    <div style="font-size: 0.8rem; opacity: 0.8;">
+                        Modif: {{ sol.updated_at|date:"d/m - H:i" }}
+                    </div>
+                </div>
+
+                <div class="card-row">
+                    <div style="font-size: 0.9rem; line-height: 1.4;">
+                        Início: {{ sol.data_inicio|date:"d/m - H:i" }}<br>
+                        Fim: &nbsp;&nbsp;&nbsp;{{ sol.data_fim|date:"d/m - H:i" }}
+                    </div>
+
+                    <div>
+                        <button class="btn-icon" title="Baixar PDF">
+                            <i class="bi bi-file-earmark-arrow-down-fill"></i>
+                        </button>
+
+                        <a href="#" class="btn-icon" title="Excluir" onclick="return confirm('Tem certeza que deseja EXCLUIR esta solicitação?');">
+                            <i class="bi bi-trash3-fill"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <hr style="border: 1px solid black; width: 100%; margin: 5px 0;">
+
+                <div style="font-weight: bold;">
+                    Status: {{ sol.get_status_display }}
+                </div>
+
+            </div>
+        {% endfor %}
+    </div>
+
+{% endif %}
+
+<div class="fab-container">
+    <button class="fab-btn btn-calendar" title="Ver Calendário">
+        <i class="bi bi-calendar-fill"></i>
+    </button>
+    
+    <a href="{% url 'criar_solicitacao' %}" title="Nova Solicitação" style="text-decoration: none;">
+        <button class="fab-btn btn-add">
+            <i class="bi bi-plus-lg"></i>
+        </button>
+    </a>
+</div>
+
+{% endblock %}
