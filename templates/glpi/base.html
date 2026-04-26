@@ -132,10 +132,10 @@
                     {% if user.is_authenticated %}
                         <div class="dropdown">
                             <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
-                                <span>Olá, {{ user.nome|default:user.email }}</span>
+                                <span>Olá, {{ user.first_name|default:user.username }}</span>
                                 <div class="rounded-circle d-flex align-items-center justify-content-center" 
                                      style="width: 35px; height: 35px; background-color: var(--neon-pink); color: var(--bg-dark); font-weight:bold;">
-                                    {{ user.email|first|upper }}
+                                    {{ user.username|first|upper }}
                                 </div>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end shadow">

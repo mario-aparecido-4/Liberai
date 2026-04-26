@@ -5,13 +5,14 @@ class SolicitacaoForm(forms.ModelForm):
     class Meta:
         model = Solicitacao
         # Ordem exata que vamos renderizar no HTML
-        fields = ['motivo', 'espaco', 'data_inicio', 'data_fim']
+        fields = ['motivo', 'espaco', 'data_inicio', 'data_fim', 'detalhes']
         
         widgets = {
             'motivo': forms.TextInput(attrs={'class': 'custom-input', 'placeholder': 'Ex: Treino de Futsal'}),
             'espaco': forms.Select(attrs={'class': 'custom-input'}),
             'data_inicio': forms.DateTimeInput(attrs={'class': 'custom-input', 'type': 'datetime-local'}),
             'data_fim': forms.DateTimeInput(attrs={'class': 'custom-input', 'type': 'datetime-local'}),
+            'detalhes': forms.Textarea(attrs={'class': 'custom-input', 'rows': 4, 'placeholder': 'Descreva como o espaço será utilizado...'}),
         }
         
     def __init__(self, *args, **kwargs):

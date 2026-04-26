@@ -25,8 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'glpi',
-    'user'
+    'glpi'
 ]
 
 MIDDLEWARE = [
@@ -67,7 +66,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'glpi', # Nome do banco que você criou
         'USER': 'root', # Seu usuário MySQL (root ou outro)
-        'PASSWORD': '2354', 
+        'PASSWORD': 'ifalpalmeira', # Senha do usuário
         'HOST': 'localhost', # Ou IP do servidor MySQL
         'PORT': '3306', # Porta padrão do MySQL
             'OPTIONS': {
@@ -123,6 +122,3 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'roteador'
 # Redireciona para a Home (ou login) depois de deslogar
 LOGOUT_REDIRECT_URL = 'login'
-
-
-AUTH_USER_MODEL = 'user.Usuario'

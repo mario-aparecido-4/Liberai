@@ -1,9 +1,5 @@
 from django.contrib import admin
-from .models import Espaco, Bloqueio, BloqueioRecorrente, Solicitacao
-
-admin.site.register(Bloqueio)
-
-admin.site.register(BloqueioRecorrente)
+from .models import Espaco, Solicitacao
 
 @admin.register(Espaco)
 class EspacoAdmin(admin.ModelAdmin):
@@ -23,10 +19,10 @@ class SolicitacaoAdmin(admin.ModelAdmin):
     list_filter = ('status', 'espaco', 'data_inicio')
     
     # Barra de busca (busca por nome do usuário ou do espaço)
-
-    search_fields = ('solicitante__email', 'solicitante__nome', 'espaco__nome', 'motivo')
-
-    #   date_hierarchy = 'data_inicio'
+    search_fields = ('solicitante__username', 'solicitante__first_name', 'espaco__nome', 'motivo', 'detalhes')
+    
+    # Navegação por data no topo
+    date_hierarchy = 'data_inicio'
     
     # Campos que ninguém pode editar na mão (segurança)
     readonly_fields = ('created_at', 'updated_at')
@@ -34,10 +30,10 @@ class SolicitacaoAdmin(admin.ModelAdmin):
     # Organização visual do formulário de edição
     fieldsets = (
         ('Dados da Solicitação', {
-            'fields': ('solicitante', 'espaco', 'motivo', ('data_inicio', 'data_fim'))
+            'fields': ('solicitante', 'espaco', 'motivo', ('data_inicio', 'data_fim'), 'detalhes')
         }),
         ('Área Administrativa (Direção)', {
-            'fields': ('status', 'motivo_status', 'analisado_por'),
+            'fields': ('status', 'observacao_admin', 'aprovado_por'),
             'classes': ('collapse',), # Deixa essa área recolhida por padrão (opcional)
         }),
         ('Auditoria', {
@@ -49,6 +45,6 @@ class SolicitacaoAdmin(admin.ModelAdmin):
     # Dica: Preencher automaticamente o "aprovado_por" com o usuário logado
     def save_model(self, request, obj, form, change):
         # Se o status mudou para algo que não seja pendente e não tem aprovador...
-        if obj.status != 'PENDENTE' and not obj.analisado_por:
-            obj.analisado_por = request.user
+        if obj.status != 'PENDENTE' and not obj.aprovado_por:
+            obj.aprovado_por = request.user
         super().save_model(request, obj, form, change)
